@@ -44,11 +44,16 @@ const CreateReport = () => {
     }
   }
 
-  const getLocation = () => {
-    const location =  FetchLocation()
+  const getLocation = async () => {
+  try {
+    const location = await FetchLocation()
     console.log(location);
     setCurrLocation(location)
-    // setIsLocationFecthClick(true)
+  
+  } catch (err) {
+    console.log(err);
+    
+  }
   }
 
   return (
