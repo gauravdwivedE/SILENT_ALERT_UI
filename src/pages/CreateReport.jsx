@@ -11,7 +11,7 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import { FetchLocation } from "../hooks/users/FetchLocation"
 
 const CreateReport = () => {
-  const [location, setLocation] = useState(null)
+  const [currLocation, setCurrLocation] = useState(null)
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
 
   const onSubmit = async (data) => {
@@ -47,7 +47,7 @@ const CreateReport = () => {
   const getLocation = () => {
     const location =  FetchLocation()
     console.log(location);
-    setLocation(location)
+    setCurrLocation(location)
     // setIsLocationFecthClick(true)
   }
 
@@ -102,7 +102,7 @@ const CreateReport = () => {
                 <div className="flex">
                   <Button variant="outline" type="button" onClick={getLocation}>Current location</Button>
                   {
-                    location ?
+                    currLocation ?
                       <Button variant="outline"><CheckCircleIcon className="text-green-600" /></Button>
                       :
                       <Button type="button" variant="outline"><XCircleIcon className="text-red-600" /></Button>
