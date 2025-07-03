@@ -20,8 +20,8 @@ const CreateReport = () => {
     formData.append('type', data.type)
     formData.append('description', data.description)
     formData.append('location', {
-      latitude: parseFloat(location?.latitude),
-      longitude: parseFloat(location?.longitude),
+      latitude: parseFloat(currLocation?.latitude),
+      longitude: parseFloat(currLocation?.longitude),
     })
     formData.append('media1', data.media1[0])
     formData.append('media2', data.media2[0])
