@@ -62,6 +62,8 @@ const EditReport = () => {
 
   const getLocation = async () => {
     const location =  FetchLocation()
+    console.log(location);
+    
     setCurrLocaction(location)
   }
 
