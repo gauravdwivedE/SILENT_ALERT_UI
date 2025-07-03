@@ -11,14 +11,8 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import { FetchLocation } from "../hooks/users/FetchLocation"
 
 const CreateReport = () => {
-  const [location, setLocation] = useState({})
-  const [isLocationFetchClick, setIsLocationFecthClick] = useState(false)
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: {
-      latitude: location?.latitude,
-      longitude: location?.latitude
-    }
-  })
+  const [location, setLocation] = useState(null)
+  const { register, handleSubmit, reset, formState: { errors } } = useForm()
 
   const onSubmit = async (data) => {
 
@@ -26,8 +20,8 @@ const CreateReport = () => {
     formData.append('type', data.type)
     formData.append('description', data.description)
     formData.append('location', {
-      latitude: parseFloat(data.latitude),
-      longitude: parseFloat(data.longitude),
+      latitude: parseFloat(location?.latitude),
+      longitude: parseFloat(location?.longitude),
     })
     formData.append('media1', data.media1[0])
     formData.append('media2', data.media2[0])
@@ -42,7 +36,7 @@ const CreateReport = () => {
       })
       if (res.status == 201) {
         toast.success(res.message || "Report created")
-        setIsLocationFecthClick(false)
+        location(null)
       }
        reset()
     } catch (err) {
@@ -52,8 +46,9 @@ const CreateReport = () => {
 
   const getLocation = () => {
     const location =  FetchLocation()
+    console.log(location);
     setLocation(location)
-    setIsLocationFecthClick(true)
+    // setIsLocationFecthClick(true)
   }
 
   return (
@@ -106,12 +101,12 @@ const CreateReport = () => {
                 <Label htmlFor="description" className="my-3">Location</Label>
                 <div className="flex">
                   <Button variant="outline" type="button" onClick={getLocation}>Current location</Button>
-                  {isLocationFetchClick &&
-                    (location ?
+                  {
+                    location ?
                       <Button variant="outline"><CheckCircleIcon className="text-green-600" /></Button>
                       :
                       <Button type="button" variant="outline"><XCircleIcon className="text-red-600" /></Button>
-                    )
+                    
                   }
 
                 </div>
