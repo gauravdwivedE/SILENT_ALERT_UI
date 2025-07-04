@@ -15,7 +15,7 @@ import { FetchLocation } from '../hooks/users/FetchLocation';
 const EditReport = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const [currLocation, setCurrLocaction] = useState()
+  const [currLocation, setCurrLocaction] = useState(null)
     
   useEffect(() => {
     if (!location.state?._id && !location.state?.status) {
@@ -38,8 +38,8 @@ const EditReport = () => {
       type: data.type,
       description: data.description,
       location: {
-        latitude: parseFloat(data.latitude),
-        longitude: parseFloat(data.longitude),
+        latitude: currLocation ? currLocation.latitude : data.latitude,
+        longitude:currLocation ? currLocation.longitude : data.longitude,
       },
       media: mediaFiles,
     }
@@ -60,11 +60,14 @@ const EditReport = () => {
     }
   }
 
-  const getLocation = async () => {
-    const location =  FetchLocation()
-    console.log(location);
-    
-    setCurrLocaction(location)
+  const getLocation = async  () => {
+    try {
+      const location =  await FetchLocation()    
+      setCurrLocaction(location)
+    } catch (err) {
+      console.log(err);
+      
+    }
   }
 
   return (

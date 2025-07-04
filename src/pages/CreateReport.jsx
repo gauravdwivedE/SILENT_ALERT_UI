@@ -19,10 +19,10 @@ const CreateReport = () => {
     const formData = new FormData()
     formData.append('type', data.type)
     formData.append('description', data.description)
-    formData.append('location', {
-      latitude: parseFloat(currLocation?.latitude),
-      longitude: parseFloat(currLocation?.longitude),
-    })
+    formData.append('location', JSON.stringify({
+      latitude: currLocation?.latitude,
+      longitude: currLocation?.longitude,
+    }))
     formData.append('media1', data.media1[0])
     formData.append('media2', data.media2[0])
     formData.append('media3', data.media3[0])
@@ -41,13 +41,13 @@ const CreateReport = () => {
        reset()
     } catch (err) {
       console.log(err);
+      
     }
   }
 
   const getLocation = async () => {
   try {
     const location = await FetchLocation()
-    console.log(location);
     setCurrLocation(location)
   
   } catch (err) {
