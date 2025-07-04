@@ -36,7 +36,7 @@ const CreateReport = () => {
       })
       if (res.status == 201) {
         toast.success(res.message || "Report created")
-        location(null)
+       
       }
        reset()
     } catch (err) {
