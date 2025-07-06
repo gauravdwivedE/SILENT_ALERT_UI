@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,10 +9,19 @@ import axios from "../api/axios"
 import { toast } from 'sonner';
 import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import { FetchLocation } from "../hooks/users/FetchLocation"
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CreateReport = () => {
   const [currLocation, setCurrLocation] = useState(null)
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const { user } = useSelector((state) => state.loggedInUser)
+  const navigate = useNavigate()
+
+  useEffect(()=> {
+      user?.role != 'user' && navigate("/admin")
+  },[])
+
 
   const onSubmit = async (data) => {
 

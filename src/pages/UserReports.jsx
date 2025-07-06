@@ -27,9 +27,7 @@ const UserReports = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   useEffect(() => {
-    if (user?.role !== 'user') {
-      navigate("/")
-    }
+    user?.role != 'user' && navigate("/admin")
     fetchUserReports(dispatch)
   }, [])
   const { reports } = useSelector((state) => state.reports)

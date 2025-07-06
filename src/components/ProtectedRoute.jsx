@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { setUser } from '../redux/reducers/auth.reducer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const ProtectedRoute = ({children}) => {
     const dispatch = useDispatch()
@@ -16,26 +16,26 @@ const ProtectedRoute = ({children}) => {
         dispatch(setUser(res.data.user))
       } catch (err) {
         dispatch(setUser(null))
+        toast.error("Invalid login")
         navigate("/login")
       }
     }
 
     const navigate = useNavigate()
     
-    useEffect(() => {
+    useEffect(() => {      
         const token = localStorage.getItem("authToken")
         if(!token){
-          toast.error("login first")
+          toast.error("Login is required")
           dispatch(setUser(null))
           navigate("/login")
         }else{
            getLoggedInUser()
         }
-
     },[])
+
   return (
     <>
-    
      {children} 
     </>
   )

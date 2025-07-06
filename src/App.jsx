@@ -9,7 +9,7 @@ function App() {
   const location = useLocation()
   
   useEffect(()=>{
-    if(location.pathname == '/support') return
+    if(location.pathname == '/support'|| location.pathname == '/login' || location.pathname == '/signup' ) return
     if(user?.isBlocked){
       navigate("/blocked", {state:{userId: user?._id}})
     }

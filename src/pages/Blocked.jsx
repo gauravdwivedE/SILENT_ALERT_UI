@@ -1,27 +1,14 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
-import { useLocation, useNavigate, NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../redux/reducers/auth.reducer';
+import { AlertTriangle, Link } from "lucide-react";
+import { useLocation, useNavigate, NavLink, Navigate } from 'react-router-dom';
 
 const Blocked = () => {
-  const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()
   const userId = location.state?.userId;
 
-  const goToLogin = () => {
-    localStorage.clear()
-    dispatch(setUser(null))
-    navigate("/login")
-  }
-  useEffect(() => {
-    if(!userId){
-      navigate("/")
-    }
-  },[])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
@@ -53,13 +40,11 @@ const Blocked = () => {
             <NavLink to = "/support" state={userId} className="w-full mt-2">  <Button variant="destructive" className="w-full mt-2">
              Contact Support
             </Button> </NavLink>
+             <NavLink to = "/login">Go to login </NavLink>  
             <p className="text-xs text-gray-500 dark:text-gray-400">
               If you believe this was a mistake, email us at <span className="underline">support@silentalert.app</span>
             </p>
-            <div className='flex justify-center'>
-              <p className=' h-6 w-fit mt-2 text-[15px] cursor-pointer  hover:border-b-[1.5px] hover:border-gray-700' onClick={goToLogin}>Go to Login</p>
-
-            </div>
+           
           </div>
 
           <div>

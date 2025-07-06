@@ -45,7 +45,9 @@ const Nav = () => {
           
           {(user && user?.role != 'user') && (<>
           <NavLink to="/admin/reports" className="hover:text-primary">View Reports</NavLink>
-          <NavLink to="/admin/supports" className="hover:text-primary"> Supports</NavLink></>)}
+          <NavLink to="/admin/supports" className="hover:text-primary"> Supports</NavLink>
+          <NavLink to="/admin/logs" className="hover:text-primary"> Logs</NavLink>
+          </>)}
 
         </nav>
 

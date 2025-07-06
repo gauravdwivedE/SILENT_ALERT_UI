@@ -54,6 +54,7 @@ const UserSupport = () => {
                 <tr>
                   <th className="px-4 py-3">User ID</th>
                   <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3">Created At</th>
                   <th className="px-4 py-3">Message</th>
                   <th className="px-4 py-3">Status</th>
                 </tr>
@@ -63,6 +64,7 @@ const UserSupport = () => {
                   <tr key={support._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-4 py-2">{support?.user._id}</td>
                     <td className="px-4 py-2">{support?.user.email}</td>
+                    <td className="px-4 py-2">{new Date(support?.createdAt).toLocaleString()}</td>
                     <Popover>
                       <PopoverTrigger asChild>
                         <td className="px-2 cursor-pointer text-blue-500 hover:underline">Read</td>

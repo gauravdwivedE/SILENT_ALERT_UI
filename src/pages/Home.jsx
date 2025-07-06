@@ -8,8 +8,9 @@ import HowItWorks from '../components/HowItWorks';
 const Home = () => {
   const { user } = useSelector((state) => state.loggedInUser)
   const navigate = useNavigate()
+  
   useEffect(()=> {
-      user?.role == 'admin' && navigate("/admin")
+      if(user && user?.role != 'user') navigate("/admin")
   },[])
 
   return (

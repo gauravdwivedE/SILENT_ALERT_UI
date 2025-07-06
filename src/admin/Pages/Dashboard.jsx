@@ -19,9 +19,7 @@ import Skeleton from 'react-loading-skeleton'
 const Dashboard = () => {
   const [usersSummary, setUsersSummary] = useState(null)
   const [reportsSummary, setReportsSummary] = useState(null)
-  
-  console.log(usersSummary);
-  
+    
   const getReportsSummary = async() =>{
     try {
       const res = await axios.get("reports/summary", { headers:{
@@ -44,7 +42,6 @@ const Dashboard = () => {
       console.log(err);
     }
   }
-
   useEffect(()=>{
     getReportsSummary()
     getUsersSummary()

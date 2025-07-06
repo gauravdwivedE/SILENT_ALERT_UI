@@ -16,26 +16,28 @@ import Settings  from '../admin/Pages/Settings';
 import Blocked from '../pages/Blocked';
 import ContactSupport from '../pages/ContactSupport';
 import UserSupport from '../admin/Pages/UserSupport';
+import NotFound from '../components/NotFound';
+import IsAdmins from '../components/IsAdmins';
 
 const IndexRouting = () => {
   return (
     <Routes>
      <Route path = "/" element = {<Home />}/> 
-     <Route path = "/blocked" element = {<Blocked />}/> 
-     <Route path = "/support" element = {<ContactSupport />}/> 
+     <Route path = "/blocked" element = {<ProtectedRoute><Blocked /></ProtectedRoute>}/> 
+     <Route path = "/support" element = {<ProtectedRoute> <ContactSupport /> </ProtectedRoute>}/> 
      <Route path = "/reports" element = {<ProtectedRoute> <UserReports /> </ProtectedRoute>}/> 
      <Route path = "/reports/:id" element = {<ProtectedRoute> <Report /> </ProtectedRoute>}/> 
      <Route path = "/reports/edit/:id" element = {<ProtectedRoute> <EditReport /> </ProtectedRoute>}/> 
      <Route path = "/reports/create" element = {<ProtectedRoute> <CreateReport /> </ProtectedRoute>}/> 
-     <Route path = "/reports/create/anonymous" element = { <CreateReport />}/> 
      <Route path = "/login" element = {<Login />}/> 
      <Route path = "/signup" element = {<Signup />}/> 
      <Route path = "/profile" element = {<Profile />}/> 
-     <Route path = "/admin" element = {<Dashboard/>}/> 
-     <Route path = "/admin/reports" element = {<AllReports/>}/> 
-     <Route path = "/admin/reports/:id" element = {<SingleReport />}/> 
-     <Route path = "/admin/settings" element = {<Settings />}/> 
-     <Route path = "/admin/supports" element = {<UserSupport />}/> 
+     <Route path = "/admin" element = {<ProtectedRoute> <IsAdmins> <Dashboard/> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/admin/reports" element = {<ProtectedRoute> <IsAdmins> <AllReports/> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/admin/reports/:id" element = {<ProtectedRoute> <IsAdmins> <SingleReport /> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/admin/settings" element = {<ProtectedRoute> <IsAdmins> <Settings /> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/admin/supports" element = {<ProtectedRoute> <IsAdmins> <UserSupport /> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/*" element = {<NotFound />}/> 
     </Routes>
 
     
