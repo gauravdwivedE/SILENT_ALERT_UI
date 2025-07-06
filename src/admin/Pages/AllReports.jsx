@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button"
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllReports } from "../../hooks/admin/fetchAllReports";
+import { EyeIcon } from "lucide-react";
+import { TiLocation } from "react-icons/ti";
+
 
 const AllReports = () => {
   const { reports } = useSelector((state) => state.reports);
@@ -33,7 +36,7 @@ const AllReports = () => {
   return (
     <>
       <Nav />
-      <div className="min-h-[90vh] px-4 py-10 flex justify-center items-start">
+      <div className="min-h-[90vh] px-4 py-10 flex justify-center items-start transition-all">
         <div className="w-full max-w-6xl bg-white/30 dark:bg-slate-800/30 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden border border-white/20">
           <h2 className="text-2xl font-semibold text-slate-800 dark:text-white px-6 pt-6 pb-2">
             Crime Reports
@@ -128,11 +131,16 @@ const AllReports = () => {
                       </td>
                       <td className="px-6 py-4 flex gap-2">
                         <Button variant="outline" size="sm">
-                          <NavLink to={`/admin/reports/${report._id}`} state={{ report }}> View</NavLink>
+                          <NavLink to={`/admin/reports/${report._id}`} state={{ report }}> <EyeIcon/></NavLink>
                         </Button>
-                        <Button variant="secondary" size="sm">
-                          Get location
+                        { (report?.location?.latitude && report?.location?.latitude) ? 
+                        <Button variant="outline" size="sm">
+                          <a target='_black' href={`https://www.google.com/maps/place/@${report?.location?.latitude},${report?.location?.longitude},15z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d${report?.location?.latitude}!4d${report?.location?.longitude}`}>
+                         <TiLocation /> </a>      
                         </Button>
+                        :  
+                        <Button size="sm" className="bg-gray-200 hover:bg-gray-200 cursor-not-allowed">  <TiLocation />  </Button>
+                        } 
                       </td>
                     </tr>
                   ))

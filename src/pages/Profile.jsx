@@ -58,10 +58,7 @@ const Profile = () => {
               <img src={`${user.image}`} className='rounded-full my-2 object-cover w-28 h-28' />
               <h2 className="text-xl font-semibold ">{user.name}</h2>
               <p className='mb-6 text-gray-500 text-[13px]'>{user._id}</p>
-              <Button>
-                <LogOut className="inline-block w-4 h-4 mr-2" />
-                Logout
-              </Button>
+              
             </div>
 
             {/* Details */}
