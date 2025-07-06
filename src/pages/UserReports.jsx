@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { deleteReport } from '../hooks/users/deleteReport'
+import { DeleteIcon, Edit2, EyeIcon } from "lucide-react";
 
 const UserReports = () => {
   const [dateSearch, setDateSearch] = useState("")
@@ -135,16 +136,16 @@ const UserReports = () => {
                     </td>
                     <td className="px-6 py-4 flex gap-2 flex-wrap">
                       <Button variant="outline" size="sm">
-                        <NavLink to={`/reports/${report._id}`} state={report}> View </NavLink>
+                        <NavLink to={`/reports/${report._id}`} state={report}> <EyeIcon/> </NavLink>
 
                       </Button>
-                      <Button variant="secondary" size="sm">
-                        <NavLink to={`/reports/edit/${report._id}`} state={report}> Edit </NavLink>
+                      <Button variant="outline" size="sm">
+                        <NavLink to={`/reports/edit/${report._id}`} state={report}> <Edit2/> </NavLink>
                       </Button>
                       <AlertDialog >
                         <AlertDialogTrigger asChild>
                           <Button variant="destructive" size="sm">
-                            Delete
+                            <DeleteIcon/>
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

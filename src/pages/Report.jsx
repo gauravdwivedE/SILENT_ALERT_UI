@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import ImageComponent from "../components/ImageComponent"
+import { DeleteIcon, Edit2 } from "lucide-react"
 
 const Report = () => {
   const location = useLocation()
@@ -111,13 +112,13 @@ const Report = () => {
                 </div>
 
                 <div className="space-x-3">
-                  <Button variant="secondary" size="sm">
-                    <NavLink to={`/reports/edit/${location.state?._id}`} state={location.state}> Edit </NavLink>
+                  <Button variant="outline" size="lg">
+                    <NavLink to={`/reports/edit/${location.state?._id}`} state={location.state}> <Edit2/> </NavLink>
                   </Button>
                   <AlertDialog >
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        Delete
+                      <Button variant="destructive" size="lg">
+                       <DeleteIcon/>
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
