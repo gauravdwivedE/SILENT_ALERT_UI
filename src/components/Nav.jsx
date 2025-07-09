@@ -53,9 +53,7 @@ const Nav = () => {
 
         {/* Right: Avatar */}
         <div className="flex items-center gap-7">
-          <div>
-            <BellIcon className="w-[22px]"/>
-          </div>
+          
          {
           user ?
          <DropdownMenu>
