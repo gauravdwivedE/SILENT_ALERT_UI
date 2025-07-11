@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,23 +9,29 @@ import { toast } from "sonner"
 import { setUser } from "../redux/reducers/auth.reducer"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { Loader2 } from 'lucide-react';
 
 const Signup = () => {
   const { register, handleSubmit, formState: { errors },} = useForm()
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const onSubmit = async(data) => {
    try {
+    setLoading(true)
     const res = await axios.post("/users" ,data)
     if(res.status == 201){
       toast.success("Signup successfull")
+      localStorage.setItem('authToken', res.data.token)
       dispatch(setUser(res.data.user))
       navigate("/")
     }
    } catch (err) {
-    console.log(err);
       dispatch(setUser(null))
+      toast.error(err?.response?.data?.error || err?.response?.data || err?.message )
+   }finally{
+    setLoading(false)
    }
   }
 
@@ -92,8 +98,8 @@ const Signup = () => {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign Up
+          <Button type={`${loading ? "button" : "submit"}`} className="w-full" disabled = {loading}>
+            {loading ? <span className="animate-spin"> <Loader2/></span> : 'Sign up'}
           </Button>
         </form>
       </div>

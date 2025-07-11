@@ -11,11 +11,13 @@ import { toast } from "sonner"
 import ImageComponent from '../components/ImageComponent';
 import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import { FetchLocation } from '../hooks/users/FetchLocation';
+import Loader from '../components/Loader';
 
 const EditReport = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [currLocation, setCurrLocaction] = useState(null)
+  const [loading, setLoading] = useState(false)
     
   useEffect(() => {
     if (!location.state?._id && !location.state?.status) {
@@ -23,7 +25,7 @@ const EditReport = () => {
     }
   }, [])
   
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       type: location.state?.type,
       description: location.state?.description,
@@ -33,6 +35,7 @@ const EditReport = () => {
   })
   
   const onSubmit = async (data) => {
+    setLoading(true)
     const mediaFiles = [data.media1, data.media2, data.media3, data.media4].filter(Boolean);
     const formatted = {
       type: data.type,
@@ -55,8 +58,10 @@ const EditReport = () => {
         navigate("/reports")
       }
     } catch (err) {
-      console.log(err);
+     toast.error(err.response.data || err.message)
 
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -175,8 +180,8 @@ const EditReport = () => {
                   )  : <p className="text-red-500 text-sm">No media uploaded</p>}
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Submit Report
+            <Button type={`${loading ? 'button':'submit'}`} className="w-full"  disabled = {loading && true}>
+              {loading ?  <Loader/> :  "Update report" } 
             </Button>
           </form>
         </div>

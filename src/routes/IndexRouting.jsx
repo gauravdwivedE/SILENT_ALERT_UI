@@ -17,7 +17,8 @@ import Blocked from '../pages/Blocked';
 import ContactSupport from '../pages/ContactSupport';
 import UserSupport from '../admin/Pages/UserSupport';
 import NotFound from '../components/NotFound';
-import IsAdmins from '../components/IsAdmins';
+import AuthorizationRoute from '../components/AuthorizationRoute';
+import Logs from '../admin/Pages/logs';
 
 const IndexRouting = () => {
   return (
@@ -32,11 +33,12 @@ const IndexRouting = () => {
      <Route path = "/login" element = {<Login />}/> 
      <Route path = "/signup" element = {<Signup />}/> 
      <Route path = "/profile" element = {<Profile />}/> 
-     <Route path = "/admin" element = {<ProtectedRoute> <IsAdmins> <Dashboard/> </IsAdmins> </ProtectedRoute>}/> 
-     <Route path = "/admin/reports" element = {<ProtectedRoute> <IsAdmins> <AllReports/> </IsAdmins> </ProtectedRoute>}/> 
-     <Route path = "/admin/reports/:id" element = {<ProtectedRoute> <IsAdmins> <SingleReport /> </IsAdmins> </ProtectedRoute>}/> 
-     <Route path = "/admin/settings" element = {<ProtectedRoute> <IsAdmins> <Settings /> </IsAdmins> </ProtectedRoute>}/> 
-     <Route path = "/admin/supports" element = {<ProtectedRoute> <IsAdmins> <UserSupport /> </IsAdmins> </ProtectedRoute>}/> 
+     <Route path = "/admin" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['admin', 'inspector', 'superAdmin']}> <Dashboard/> </AuthorizationRoute>  </ProtectedRoute>}/> 
+     <Route path = "/admin/reports" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['admin', 'inspector', 'superAdmin']}> <AllReports/> </AuthorizationRoute> </ProtectedRoute>}/> 
+     <Route path = "/admin/reports/:id" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['admin', 'inspector', 'superAdmin']}> <SingleReport /> </AuthorizationRoute>  </ProtectedRoute>}/> 
+     <Route path = "/admin/settings" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['superAdmin']}> <Settings /> </AuthorizationRoute> </ProtectedRoute>}/> 
+     <Route path = "/admin/supports" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['admin', 'superAdmin']}> <UserSupport /></AuthorizationRoute>  </ProtectedRoute>}/> 
+     <Route path = "/admin/logs" element = {<ProtectedRoute> <AuthorizationRoute allowedRoles={['admin', 'superAdmin']}> <Logs /></AuthorizationRoute>  </ProtectedRoute>}/> 
      <Route path = "/*" element = {<NotFound />}/> 
     </Routes>
 

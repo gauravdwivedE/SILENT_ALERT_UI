@@ -15,7 +15,6 @@ import axios from '../../api/axios';
 import Skeleton from 'react-loading-skeleton'
 
 
-
 const Dashboard = () => {
   const [usersSummary, setUsersSummary] = useState(null)
   const [reportsSummary, setReportsSummary] = useState(null)

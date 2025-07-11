@@ -29,12 +29,12 @@ const Login = () => {
   }
 
   const onSubmit = async (data) => {
-    setLoading(true)
     try {
+      setLoading(true)
       const res = await axios.post("users/login", data)
         getLogin(res)
 
-    } catch (err) {
+    } catch (err) {      
       toast.error(err?.response?.data || err?.message)
     }
     finally{
@@ -119,7 +119,7 @@ const Login = () => {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type={`${loading ? "button" : "submit"}`} className="w-full" disabled = {loading}>
             {loading ? <span className="animate-spin"> <Loader2/></span> : 'Login'}
           </Button>
         </form>

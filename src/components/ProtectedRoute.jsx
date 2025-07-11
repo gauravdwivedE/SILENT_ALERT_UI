@@ -15,10 +15,11 @@ const ProtectedRoute = ({children}) => {
         }})
         dispatch(setUser(res.data.user))
       } catch (err) {
-        dispatch(setUser(null))
-        toast.error("Invalid login")
+       
+        dispatch(setUser(null))}
+        toast.error(err?.response?.data?.error || err?.response?.data || err.message)
         navigate("/login")
-      }
+      
     }
 
     const navigate = useNavigate()

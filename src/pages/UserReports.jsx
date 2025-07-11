@@ -17,21 +17,25 @@ import {
 } from "@/components/ui/alert-dialog"
 import { deleteReport } from '../hooks/users/deleteReport'
 import { DeleteIcon, Edit2, EyeIcon } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
+import Loader from '../components/Loader';
 
 const UserReports = () => {
   const [dateSearch, setDateSearch] = useState("")
   const [reportType, setReportType] = useState("")
   const [reportStatus, setReportStatus] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const { user } = useSelector((state) => state.loggedInUser)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
   useEffect(() => {
     user?.role != 'user' && navigate("/admin")
-    fetchUserReports(dispatch)
+    fetchUserReports(dispatch, setLoading)
   }, [])
   const { reports } = useSelector((state) => state.reports)
-
   const filteredReports = reports?.filter((report) => {
     const dateMatch = dateSearch
       ? new Date(report.createdAt).toLocaleDateString() == new Date(dateSearch).toLocaleDateString()
@@ -44,7 +48,6 @@ const UserReports = () => {
       : true
     return dateMatch && statusMatch && typeMatch
   })
-
 
   return (
     <>
@@ -102,7 +105,16 @@ const UserReports = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredReports && filteredReports.length > 0 ? filteredReports.map((report, idx) => (
+                {loading ? 
+                [1,2,3,4,5].map((idx)=> <tr key = {idx} >    
+                 <td className="px-4 py-3"><Skeleton width={80}/></td>
+                 <td className="px-5 py-3"><Skeleton /></td>
+                 <td className="px-5 py-3"><Skeleton width={80}/></td>
+                 <td className="px-5 py-3"><Skeleton width={120}/></td>
+                 <td className="px-5 py-3"><Skeleton width={130}/></td>
+                </tr> )
+               :
+                filteredReports && filteredReports.length > 0 ? filteredReports.map((report, idx) => (
                   <tr
                     key={idx}
                     className={`${idx % 2 === 0 ? "bg-white/20 dark:bg-slate-800/20" : ""
@@ -142,9 +154,9 @@ const UserReports = () => {
                       </Button>
                       <AlertDialog >
                         <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="sm">
-                            <DeleteIcon/>
-                          </Button>
+                        <Button variant="destructive" size="sm" disabled = {deleteLoading}>
+                      {deleteLoading ? <Loader/> : <DeleteIcon/>}
+                      </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
@@ -156,7 +168,7 @@ const UserReports = () => {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deleteReport(report._id, dispatch, navigate)}>Continue</AlertDialogAction>
+                            <AlertDialogAction onClick={() => deleteReport(report._id, navigate, setDeleteLoading, dispatch)}>Continue</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>

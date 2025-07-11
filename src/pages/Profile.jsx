@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import axios from '../api/axios';
 import { setUser } from '../redux/reducers/auth.reducer';
 import { toast } from 'sonner';
+import Loader from '../components/Loader';
 
 const Profile = () => {
   const [loading, setLoading] = useState(false)
@@ -29,6 +30,7 @@ const Profile = () => {
   async function submit(data){
    
     try {
+      setLoading(true)
       const res = await axios.put("/users", data, {headers:{
         Authorization : `Bearer ${localStorage.getItem('authToken')}`
       }})
@@ -36,11 +38,11 @@ const Profile = () => {
       if(res.status == 200){
         dispatch(setUser(res.data.user))
         toast.success("Profile updated")
- 
       }
     } catch (err) {
-      console.log(err);
-      
+      toast.error(err?.response?.data?.error || err.response.data || err.message)
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -86,14 +88,16 @@ const Profile = () => {
                           </div>
                           <div className="grid gap-3">
                             <Label htmlFor="username-1">Phone</Label>
-                            <Input id="username-1"  {...register('phone')} defaultValue={`${user?.phone ? user.phone :""}`} />
+                            <Input maxLength = {10} id="username-1"  {...register('phone',{ minLength:10, maxLength:10})} defaultValue={`${user?.phone ? user.phone :""}`} />
                           </div>
                         </div>
                         <DialogFooter className="mt-3">
                           <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                           </DialogClose>
-                          <Button type="submit">Save changes</Button>
+                    
+                           <Button type={`${loading ? "button" : "submit"}`} className="w-32" disabled = {loading}>{loading ?<Loader/> : 'Save changes'}</Button> 
+                         
                         </DialogFooter>
                     </form>
                       </DialogContent>

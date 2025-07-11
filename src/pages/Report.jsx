@@ -1,12 +1,10 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import Nav from "../components/Nav"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLocation, useNavigate, NavLink } from "react-router-dom"
 import { toast } from "sonner"
-import { useDispatch } from "react-redux"
 import { deleteReport } from "../hooks/users/deleteReport"
-import Skeleton from 'react-loading-skeleton'
 
 import {
   AlertDialog,
@@ -21,18 +19,17 @@ import {
 } from "@/components/ui/alert-dialog"
 import ImageComponent from "../components/ImageComponent"
 import { DeleteIcon, Edit2 } from "lucide-react"
+import Loader from '../components/Loader';
 
 const Report = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     if (!location.state?._id) {
       navigate("/")
       toast.error("invalid operation")
     }
-
   }, [])
 
   return (
@@ -117,8 +114,8 @@ const Report = () => {
                   </Button>
                   <AlertDialog >
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="lg">
-                       <DeleteIcon/>
+                      <Button variant="destructive" size="lg" disabled = {loading}>
+                      {loading ? <Loader/> : <DeleteIcon/>}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -131,12 +128,13 @@ const Report = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteReport(location.state?._id, dispatch, navigate)}>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
+                        
+                        <AlertDialogAction onClick={() => deleteReport(location.state?._id, navigate, setLoading)}>Continue</AlertDialogAction>
+                      
+                        </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
-
               </div>
             </CardContent>
           </Card>

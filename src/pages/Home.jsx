@@ -10,7 +10,7 @@ const Home = () => {
   const navigate = useNavigate()
   
   useEffect(()=> {
-      if(user && user?.role != 'user') navigate("/admin")
+       if(user && user?.role != 'user') navigate("/admin")
   },[])
 
   return (

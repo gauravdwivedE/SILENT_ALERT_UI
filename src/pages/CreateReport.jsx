@@ -11,9 +11,11 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react"
 import { FetchLocation } from "../hooks/users/FetchLocation"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 const CreateReport = () => {
   const [currLocation, setCurrLocation] = useState(null)
+  const [loading, setLoading] = useState(null)
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
   const { user } = useSelector((state) => state.loggedInUser)
   const navigate = useNavigate()
@@ -24,7 +26,6 @@ const CreateReport = () => {
 
 
   const onSubmit = async (data) => {
-
     const formData = new FormData()
     formData.append('type', data.type)
     formData.append('description', data.description)
@@ -32,25 +33,28 @@ const CreateReport = () => {
       latitude: currLocation?.latitude,
       longitude: currLocation?.longitude,
     }))
-    formData.append('media1', data.media1[0])
-    formData.append('media2', data.media2[0])
-    formData.append('media3', data.media3[0])
-    formData.append('media4', data.media4[0])
+    
+    formData.append('media1', data.media1 && data.media1[0])
+    formData.append('media2', data.media2 && data.media2[0])
+    formData.append('media3', data.media3 && data.media3[0])
+    formData.append('media4', data.media4 && data.media4[0])
 
     try {
+      setLoading(true)
       const res = await axios.post("reports", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
       })
       if (res.status == 201) {
+        reset()
         toast.success(res.message || "Report created")
-       
       }
-       reset()
     } catch (err) {
-      console.log(err);
-      
+      toast.error(err.response.data || err.message)
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -103,7 +107,7 @@ const CreateReport = () => {
                 id="description"
                 placeholder="What happened?"
                 rows={4}
-                {...register("description", { required: "Description is required" })}
+                {...register("description", { required: "Description is required", minLength: { value:5 , message: "description length must be at least 5 characters long"} })}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -177,9 +181,11 @@ const CreateReport = () => {
                 ))}
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Submit Report
+           
+            <Button type={`${loading ? 'button':'submit'}`} className="w-full"  disabled = {loading}>
+              {loading ?  <Loader/> :  "Submit Report" } 
             </Button>
+            
           </form>
         </div>
       </div>

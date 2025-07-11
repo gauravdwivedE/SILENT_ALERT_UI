@@ -30,10 +30,12 @@ import { toast } from "sonner"
 import localStorage from "redux-persist/es/storage"
 import { Edit2Icon } from "lucide-react"
 import ImageComponent from '../../components/ImageComponent';
+import { useSelector } from 'react-redux';
 
 
 
 const SingleReport = () => {
+  const { user } = useSelector((state) => state.loggedInUser)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -170,31 +172,40 @@ const SingleReport = () => {
 
                     {/* activity */}
                     <div className="text-sm">
+                    {(user?.role == 'admin' || user?.role == 'superAdmin') ?
+                   <AlertDialog>
+                   <AlertDialogTrigger asChild>
+                  
+                     <span className={`flex px-4 py-1 gap-4 rounded  select-none w-fit items-center text-center text-white text-xs cursor-pointer
+                       ${report?.user?.isBlocked ? "bg-green-500" : "bg-red-500"}`}
+                     >
+                       {report?.user?.isBlocked ? "Unblock this user" : "Block this user"} <Edit2Icon className="w-[15px]" />
+                     </span>
+                   
+                   </AlertDialogTrigger>
+                   <AlertDialogContent>
+                     <AlertDialogHeader>
+                       <AlertDialogTitle>Do you want to {report?.user?.isBlocked ? "Unblock" : "Block"} this user</AlertDialogTitle>
+                       <AlertDialogDescription>
+                         This action will permanetly {report?.user?.isBlocked ? "Unblock" : "Block"} this user
 
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-
-                          <span className={`flex px-4 py-1 gap-4 rounded w-fit items-center text-center text-white text-xs cursor-pointer
-                            ${report?.user?.isBlocked ? "bg-green-500" : "bg-red-500"}`}
-                          >
-                            {report?.user?.isBlocked ? "Unblock this user" : "Block this user"} <Edit2Icon className="w-[15px]" />
-                          </span>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Do you want to {report?.user?.isBlocked ? "Unblock" : "Block"} this user</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action will permanetly {report?.user?.isBlocked ? "Unblock" : "Block"} this user
-
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction className={`${report?.user?.isBlocked ? "bg-green-500 hover:bg-green-500" : "bg-red-500 hover:bg-red-500"}`} onClick={() => handleUserBlock(!report?.user?.isBlocked, report?.user?._id)} >Yes, {report?.user?.isBlocked ? "Unblock" : "Block"} </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-
+                       </AlertDialogDescription>
+                     </AlertDialogHeader>
+                     <AlertDialogFooter>
+                       <AlertDialogCancel>Cancel</AlertDialogCancel>
+                       <AlertDialogAction
+                        className={`${report?.user?.isBlocked ? "bg-green-500 hover:bg-green-500" : "bg-red-500 hover:bg-red-500"}`}
+                        onClick={() => handleUserBlock(!report?.user?.isBlocked, report?.user?._id)}>Yes, {report?.user?.isBlocked ? "Unblock" : "Block"}
+                        </AlertDialogAction>
+                     </AlertDialogFooter>
+                   </AlertDialogContent>
+                 </AlertDialog>  
+                  : <span className={`flex px-4 py-1 gap-4 rounded w-fit items-center text-center text-white text-xs cursor-not-allowed select-none disabled
+                      ${report?.user?.isBlocked ? "bg-green-300" : "bg-red-200"}`}
+                    >
+                    {report?.user?.isBlocked ? "Unblock this user" : "Block this user"} <Edit2Icon className="w-[15px]" />
+                     </span>
+                      }
                     </div>
                   </div>
                 </div>
@@ -219,6 +230,7 @@ const SingleReport = () => {
                     )}
                 </div>
                 <div>
+                {(user?.role == 'admin' || user?.role == 'superAdmin') && 
                   <Dialog>
                     <DialogTrigger><Button variant="outline">Update status</Button></DialogTrigger>
                     <DialogContent>
@@ -241,6 +253,8 @@ const SingleReport = () => {
                       </DialogHeader>
                     </DialogContent>
                   </Dialog>
+                  
+                  }
                 </div>
               </div>
             </CardContent>
