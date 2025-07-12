@@ -7,10 +7,12 @@ import { MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'sonner';
+import Loader from '../components/Loader';
 
 const ContactSupport = () => {
   const [support, setSupport] = useState(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const location = useLocation()
   const userId = location.state;
@@ -22,6 +24,7 @@ const ContactSupport = () => {
     }
     const getSupport = async () => {
       try {
+        setLoading(true)
         const res = await axios.get("/supports/users", {
           headers: {
             Authorization: `Beare ${localStorage.getItem("authToken")}`
@@ -43,6 +46,7 @@ const ContactSupport = () => {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true)
       const res = await axios.post("/supports", data, {
         headers: {
           Authorization: `Beare ${localStorage.getItem("authToken")}`
@@ -52,7 +56,10 @@ const ContactSupport = () => {
         setSupport(res.data.support)
 
     } catch (err) {
-      console.log(err);
+      toast.error(err.response?.data.error || err.response?.data?.message || err.message)
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -128,8 +135,8 @@ const ContactSupport = () => {
                 </p>
 
                 {/* Submit Button */}
-                <Button type="submit" className="w-full mt-2">
-                  Send Message
+                <Button type={`${loading ? 'button':'submit'}`} disabled = {loading} className="w-full mt-2">
+                  {loading ? <Loader/> : "Send Message"}
                 </Button>
               </form>
             )}
