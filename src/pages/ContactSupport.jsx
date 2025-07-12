@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { LogIn, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import Skeleton from 'react-loading-skeleton';

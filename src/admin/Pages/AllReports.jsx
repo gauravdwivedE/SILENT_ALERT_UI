@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllReports } from "../../hooks/admin/fetchAllReports";
 import { EyeIcon } from "lucide-react";
 import { TiLocation } from "react-icons/ti";
+import Skeleton from "react-loading-skeleton";
 
 
 const AllReports = () => {
@@ -16,9 +17,10 @@ const AllReports = () => {
   const [dateSearch, setDateSearch] = useState("");
   const [reportType, setReportType] = useState("");
   const [reportStatus, setReportStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchAllReports(dispatch);
+    fetchAllReports(dispatch, setLoading);
   }, []);
 
   const filteredReports = reports?.filter((report) => {
@@ -97,7 +99,17 @@ const AllReports = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredReports && filteredReports.length > 0 ? (
+                {loading ?
+                 [1,2,3,4,5].map((idx)=> <tr key = {idx} >    
+                 <td className="px-4 py-3"><Skeleton width={80}/></td>
+                 <td className="px-5 py-3"><Skeleton /></td>
+                 <td className="px-5 py-3"><Skeleton width={250}/></td>
+                 <td className="px-5 py-3"><Skeleton width={80}/></td>
+                 <td className="px-5 py-3"><Skeleton width={150}/></td>
+                 <td className="px-5 py-3"><Skeleton width={100}/></td>
+                </tr> )  
+                : 
+                filteredReports && filteredReports.length > 0 ? (
                   filteredReports.map((report, idx) => (
                     <tr
                       key={idx}

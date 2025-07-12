@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 import axios from "../../api/axios";
 import { toast } from "sonner";
+import Skeleton from "react-loading-skeleton";
 
 const LogPage = () => {
   const [logs, setLogs] = useState([]);
@@ -33,44 +34,13 @@ const LogPage = () => {
     fetchLogs();
   }, []);
 
-  const handleStatusChange = async (status, logId) => {
-    try {
-      const res = await axios.patch(
-        `/logs/${logId}/status`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-
-      if (res.status === 200) {
-        toast.success(res.data.message);
-        // Update status locally
-        setLogs((prevLogs) =>
-          prevLogs.map((log) =>
-            log._id === logId ? { ...log, status } : log
-          )
-        );
-      }
-    } catch (err) {
-      console.error("Error updating status:", err);
-      toast.error("Failed to update log status");
-    }
-  };
-
   return (
     <>
       <Nav />
       <div className="px-4 py-10 max-w-6xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6 text-gray-800">Activity Logs</h1>
 
-        {loading ? (
-          <p>Loading logs...</p>
-        ) : logs.length === 0 ? (
-          <p className="text-gray-500">No logs found.</p>
-        ) : (
+         
           <div className="overflow-x-auto border rounded-lg shadow-sm">
             <table className="min-w-full text-sm text-left">
               <thead className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
@@ -84,7 +54,16 @@ const LogPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {logs.map((log) => (
+              {loading ? 
+               [1,2,3,4,5].map((idx)=> <tr key = {idx} >    
+               <td className="px-3 py-3"><Skeleton width={80}/></td>
+               <td className="px-3 py-3"><Skeleton /></td>
+               <td className="px-3 py-3"><Skeleton width={80}/></td>
+               <td className="px-3 py-3"><Skeleton width={120}/></td>
+               <td className="px-3 py-3"><Skeleton width={130}/></td>
+              </tr> )
+              : logs?.length > 0 ? 
+                logs.map((log) => (
                   <tr key={log._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-4 py-2">{log?.user?._id}</td>
                     <td className="px-4 py-2">{log?.user?.email}</td>
@@ -98,11 +77,11 @@ const LogPage = () => {
                      <td className="px-4 py-2">{new Date(log?.createdAt).toLocaleString()}</td>
                     
                   </tr>
-                ))}
+                )): <p className="text-center py-6 flex justify-center">No logs found</p>}
               </tbody>
             </table>
           </div>
-        )}
+       
       </div>
     </>
   );

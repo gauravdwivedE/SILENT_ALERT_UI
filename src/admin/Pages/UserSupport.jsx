@@ -9,26 +9,28 @@ import {
 } from "@/components/ui/popover"
 import axios from "../../api/axios";
 import { toast } from "sonner";
+import Skeleton from "react-loading-skeleton";
 
 
 const UserSupport = () => {
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
-  const {supports} = useSelector((state) => state.supports)
+  const { supports } = useSelector((state) => state.supports)
 
   useEffect(() => {
-    fetchAllSupports(dispatch);
+    fetchAllSupports(dispatch, setLoading);
   }, [dispatch])
 
   const handleStatusChange = async (status, supportId) => {
     try {
-      const res = await axios.patch(`/supports/${supportId}/status`, {status}, {
+      const res = await axios.patch(`/supports/${supportId}/status`, { status }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`
         }
       })
-      if(res.status == 200)
-          toast.success(res.data.message)
-      
+      if (res.status == 200)
+        toast.success(res.data.message)
+
     } catch (err) {
       console.log(err);
 
@@ -47,56 +49,65 @@ const UserSupport = () => {
           <p className="text-gray-500">No support requests found.</p>
         )} */}
 
-        {supports?.length > 0 && (
-          <div className="overflow-x-auto border rounded-lg shadow-sm">
-            <table className="min-w-full text-sm text-left">
-              <thead className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
-                <tr>
-                  <th className="px-4 py-3">User ID</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Created At</th>
-                  <th className="px-4 py-3">Message</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {supports.map((support) => (
-                  <tr key={support._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                    <td className="px-4 py-2">{support?.user._id}</td>
-                    <td className="px-4 py-2">{support?.user.email}</td>
-                    <td className="px-4 py-2">{new Date(support?.createdAt).toLocaleString()}</td>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <td className="px-2 cursor-pointer text-blue-500 hover:underline">Read</td>
-                      </PopoverTrigger>
 
-                      <PopoverContent
-                        className="w-[90vw]  sm:w-[40vw] max-h-[60vh] overflow-y-auto text-sm "
-                        align="start"
-                        side="right">
-                        <p className="font-semibold">User ID {support?.user._id}</p>
-                        <div className="p-2 text-gray-800 dark:text-gray-200">
-                          {support.message}
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+        <div className="overflow-x-auto border rounded-lg shadow-sm">
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 uppercase text-xs">
+              <tr>
+                <th className="px-4 py-3">User ID</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">Created At</th>
+                <th className="px-2 py-3">Message</th>
+                <th className="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {loading ?
+                  [1, 2, 3, 4, 5].map((idx) => <tr key={idx} >
+                    <td className="px-3 py-3"><Skeleton width={200} /></td>
+                    <td className="px-3 py-3"><Skeleton width={180} /></td>
+                    <td className="px-3 py-3"><Skeleton width={80} /></td>
+                    <td className="px-3 py-3"><Skeleton width={60} /></td>
+                    <td className="px-3 py-3"><Skeleton width={60} /></td>
+                  </tr>) :
+                  supports?.length > 0 ? supports.map((support) => (
+                    <tr key={support._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="px-4 py-2">{support?.user._id}</td>
+                      <td className="px-4 py-2">{support?.user.email}</td>
+                      <td className="px-4 py-2">{new Date(support?.createdAt).toLocaleString()}</td>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <td className="px-4 cursor-pointer text-blue-500 hover:underline">Read</td>
+                        </PopoverTrigger>
+
+                        <PopoverContent
+                          className="w-[90vw]  sm:w-[40vw] max-h-[60vh] overflow-y-auto text-sm "
+                          align="start"
+                          side="right">
+                          <p className="font-semibold">User ID {support?.user._id}</p>
+                          <div className="p-2 text-gray-800 dark:text-gray-200">
+                            {support.message}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
 
 
-                    <td>
-                      <select className={`border-none outline-none`}
-                        defaultValue={`${support?.status}`}
-                        onChange={(e) => handleStatusChange(e.target.value, support._id)}>
-                        <option value="pending">Pending</option>
-                        <option value="accepted">Accepted</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      <td>
+                        <select className={`border-none outline-none`}
+                          defaultValue={`${support?.status}`}
+                          onChange={(e) => handleStatusChange(e.target.value, support._id)}>
+                          <option value="pending">Pending</option>
+                          <option value="accepted">Accepted</option>
+                          <option value="rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  )) : <p className="text-center py-6 flex justify-center">No logs found</p>}
+
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </>
   );

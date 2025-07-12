@@ -1,8 +1,10 @@
+import { toast } from 'sonner'
 import axios from '../../api/axios' 
 import {setReports} from '../../redux/reducers/report.reducer'
 
-export const fetchAllReports = async (dispatch) => {
+export const fetchAllReports = async (dispatch, setLoading) => {
     try {
+      setLoading(true)
       const res = await axios.get("/reports", {
         headers:{
           Authorization: `Bearer ${localStorage.getItem('authToken')}`
@@ -11,6 +13,11 @@ export const fetchAllReports = async (dispatch) => {
 
       dispatch(setReports(res.data.data))
     } catch (err) {
-      dispatch(setReports(null))
+      if(err.status != 429){
+      dispatch(setReports(null))}
+      toast.error(err.response?.data?.error || err.response?.data || err.message)
+    }finally{
+      setLoading(false)
     }
+
   }

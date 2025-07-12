@@ -16,26 +16,24 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const Settings = () => {
-  const [userId, setUserId] = useState("")
   const [userDetails, setUserDetails] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [roleLoading, setRoleLoading] = useState(false)
+  const [userBlockLoading, setUserBlockLoading] = useState(false)
   const {handleSubmit, register, formState:{errors}} = useForm()
 
-  const onSubmit = async () => {
-    setLoading(true)
-    
+  const onSubmit = async ({userId}) => {
     try {
-      if(userDetails && userId == userDetails._id) return
-      
-      const token = localStorage.getItem('authToken')
-      const res = await axios.get(`users/${userId}`, {headers:{
-        Authorization: `Bearer ${token}`
-      }})
-      console.log(res);
-      setUserDetails(res.data.user)
+       if(userDetails && userDetails?._id == userId) return 
+      setLoading(true)            
+       const token = localStorage.getItem('authToken')
+       const res = await axios.get(`users/${userId}`, {headers:{
+         Authorization: `Bearer ${token}`
+       }})
+       setUserDetails(res.data.user)
 
-    } catch (err) {
-      console.log(err);
+    } catch (err) {      
+      toast.error(err.response?.data?.error || err?.response?.data.message || err?.response?.data || err.message)
       setUserDetails(null)
     }
     finally{
@@ -46,6 +44,7 @@ const Settings = () => {
 
   const handleRoleChange = async (data) => {
     try {
+      setRoleLoading(true)
      const res = await axios.patch(`users/${userDetails._id}/role`, data, {headers:{
       Authorization: `Bearer ${localStorage.getItem('authToken')}`
      }})
@@ -56,13 +55,15 @@ const Settings = () => {
       
     }
      catch (err) {
-      console.log(err);
-      
+      toast.error(err.response?.data?.error || err?.response?.data || err.message)
+    }finally{
+      setRoleLoading(false)
     }
   }
 
   const handleUserBlock = async (status) => {
     try {
+      setUserBlockLoading(true)
       const token = localStorage.getItem("authToken")
       const res = await axios.patch(`users/${userDetails._id}/status`, {status}, {
         headers: {
@@ -75,7 +76,9 @@ const Settings = () => {
       }
       
     } catch (err) {
-      console.log(err);
+      toast.error(err.response?.data?.error || err?.response?.data || err.message)
+    }finally{
+      setUserBlockLoading(false)
     }
   }
   return (
@@ -90,21 +93,22 @@ const Settings = () => {
           </div>
 
           <div className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)}>
             <Input
               placeholder="Enter user ID"
-              value={userId}
-              className="h-11 text-base"
-              onChange={(e) => setUserId(e.target.value)}
+              className="h-11 text-base my-3"
+              {...register("userId")}
             />
-            <Button className="w-full h-11 text-base font-medium" onClick={onSubmit}>
+            <Button type="submit" className="w-full h-11 text-base font-medium" disabled = {loading}>
               Search
             </Button>
+            </form>
           </div>
         </div>
 
         {/* User Details Section */}
         {loading ? <Loader /> :
-  userDetails && (
+       userDetails && (
     <div className="mt-10 w-full max-w-3xl bg-white/40 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-2xl p-8 transition-all">
       {/* Profile Header */}
       <div className="flex  gap-4 mb-8 items-center ">
@@ -144,11 +148,11 @@ const Settings = () => {
           </span>
         </div>
         <div className="flex gap-2 flex-col sm:flex-row">
-        <span className={`flex px-4 py-1 gap-4 rounded w-fit items-center text-center text-white text-xs cursor-pointer
+        <span className={`flex px-4 py-1 gap-4 select-none rounded w-44 items-center justify-center  text-white text-xs cursor-pointer
                 ${userDetails.isBlocked ? "bg-green-500" : "bg-red-500" }`}
                 onClick={() => handleUserBlock(!userDetails.isBlocked)}
                 >
-                {userDetails.isBlocked ? "Unblock this user" : "Block this user"} <Edit2Icon className="w-[15px]"/>
+                {userBlockLoading ? <Loader/> : userDetails.isBlocked ? "Unblock this user" : "Block this user"} <Edit2Icon className="w-[15px]"/>
         </span>
 
         <Dialog>
@@ -156,7 +160,7 @@ const Settings = () => {
                   <DialogContent>
                   <DialogTitle>  Update user role </DialogTitle>
                     <DialogHeader>
-                      <form onSubmit = {handleSubmit((handleRoleChange))} className="my-2 space-x-4">
+                      <form onSubmit = {handleSubmit((handleRoleChange))} className="my-2 space-x-4 flex items-center">
                         <select
                          {...register('role',{required:"report status is required"})} defaultValue={userDetails?.role} className = {`w-fit px-5 py-2 border-2-gray border-black rounded outline-1 outline-gray-500 ${errors.status && 'outline-red-600'}`}>
                             <option value="">Select</option>
@@ -165,7 +169,7 @@ const Settings = () => {
                             <option value="inspector">Inspector</option>
                             <option value="user">user</option>
                         </select>
-                        <Button>Update</Button>
+                        <Button disabled = {roleLoading} type={roleLoading ? "button" : "submit"}>{roleLoading ? <Loader/> : "Update"}</Button>
                       </form>
 
                     </DialogHeader>

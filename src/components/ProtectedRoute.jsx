@@ -14,8 +14,8 @@ const ProtectedRoute = ({children}) => {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`
         }})
         dispatch(setUser(res.data.user))
-      } catch (err) {
-       
+      } 
+      catch (err) {
         dispatch(setUser(null))}
         toast.error(err?.response?.data?.error || err?.response?.data || err.message)
         navigate("/login")
